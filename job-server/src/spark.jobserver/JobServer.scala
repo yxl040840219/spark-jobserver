@@ -60,6 +60,7 @@ object JobServer {
   }
 
   def main(args: Array[String]) {
-    start(args, config => ActorSystem("JobServer", config))
+    val tmpArg = "/Users/yxl/workspaces/spark-git/spark-jobserver/config".split(" ")
+    start(tmpArg, config => ActorSystem("JobServer", config))
   }
 }

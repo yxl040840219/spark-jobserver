@@ -10,7 +10,7 @@ object SqlJobSpec extends JobSpecConfig {
   override val contextFactory = classOf[SQLContextFactory].getName
 }
 
-class SqlJobSpec extends JobSpecBase(SqlJobSpec.getNewSystem) {
+class SqlJobSpec extends ExtrasJobSpecBase(SqlJobSpec.getNewSystem) {
   import scala.concurrent.duration._
   import CommonMessages._
   import JobManagerSpec.MaxJobsPerContext
@@ -36,13 +36,13 @@ class SqlJobSpec extends JobSpecBase(SqlJobSpec.getNewSystem) {
 
       uploadTestJar()
       manager ! JobManagerActor.StartJob("demo", sqlLoaderClass, emptyConfig, syncEvents ++ errorEvents)
-      expectMsgPF(3 seconds, "Did not get JobResult") {
+      expectMsgPF(6 seconds, "Did not get JobResult") {
         case JobResult(_, result: Long) => result should equal (3L)
       }
       expectNoMsg()
 
       manager ! JobManagerActor.StartJob("demo", sqlQueryClass, queryConfig, syncEvents ++ errorEvents)
-      expectMsgPF(3 seconds, "Did not get JobResult") {
+      expectMsgPF(6 seconds, "Did not get JobResult") {
         case JobResult(_, result: Array[Row]) =>
           result should have length (2)
           result(0)(0) should equal ("Bob")
